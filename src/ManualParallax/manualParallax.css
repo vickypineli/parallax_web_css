@@ -1,0 +1,60 @@
+/* RESET BÁSICO */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* PARALLAX */
+.bgimg-1, 
+.bgimg-2, 
+.bgimg-3 {
+  position: relative;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bgimg-1 {
+  min-height: 100vh;
+  background-image: url("../assets/images/vinedopaisaje.jpg");
+}
+
+.bgimg-2 {
+  min-height: 600px;
+  background-image: url("../assets/images/vinedo-uvas-rojas-y-vino.jpg");
+}
+
+.bgimg-3 {
+  min-height: 100vh;
+  background-image: url("../assets/images/vinedo-botella-oscura.jpg");
+}
+
+/* TEXTO SOBRE LAS IMÁGENES */
+.caption {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.caption .border {
+  background-color: #111;
+  color: #fff;
+  padding: 18px 30px;
+  font-size: 25px;
+  letter-spacing: 7px;
+}
+
+/* SECCIONES NORMALES */
+.section {
+  padding: 60px 200px;
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}

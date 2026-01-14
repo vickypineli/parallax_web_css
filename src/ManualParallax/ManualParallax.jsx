@@ -7,56 +7,57 @@ import img1 from "../assets/images/vinedopaisaje.jpg";
 import img2 from "../assets/images/vinedo-uvas-rojas-y-vino.jpg";
 import img3 from "../assets/images/vinedo-botella-oscura.jpg";
 
-export default function ManualParallax() {
-  // eslint-disable-next-line no-unused-vars
-  const parallaxElementsRef = useRef(null);
-  const tickingRef = useRef(false);
-  const observerRef = useRef(null);
+export function ManualParallax() {
+// useRef es como una "cajita" donde guardamos algo que no queremos que se pierda 
+// pero que no necesita redibujar la pantalla cada vez que cambia.
+const parallaxElementsRef = useRef(null); // Para guardar el contenedor principal.
+const tickingRef = useRef(false);         // Un interruptor para no cansar al navegador con tantos cálculos.
+const observerRef = useRef(null);         // La "cámara" que vigilará si los elementos aparecen en pantalla.
 
   useEffect(() => {
     const parallaxElements = Array.from(document.querySelectorAll(".parallax-block"));
     const fadeElements = document.querySelectorAll(".fade");
 
     const updateParallax = () => {
+      const vh = window.innerHeight;
       parallaxElements.forEach(el => {
-        const speed = parseFloat(el.dataset.speed) || 0.2;
-        const rect = el.getBoundingClientRect();
+        const speed = parseFloat(el.dataset.speed) || 0.2; // ¿Qué tan lento se mueve? (0.2 es el 20% de la velocidad real).
+        const rect = el.getBoundingClientRect(); // Averiguamos dónde está el bloque respecto al borde de arriba.
 
-        const offset = -rect.top * speed;
+        // El truco del parallax: movemos el fondo un poco más lento que el scroll
+        const offset = -rect.top * speed; 
         el.style.backgroundPosition = `center ${offset}px`;
 
-      // === ACLARAR SOLO CUANDO SUBE / OSCURECER CUANDO BAJA ===
-      const vh = window.innerHeight;
+        // === ACLARAR SOLO CUANDO SUBE / OSCURECER CUANDO BAJA (Overlay) ===
+        let progress = 1 - (rect.top / (vh * 0.5));
 
-      // progreso basado en el centro del viewport
-      // 0 = oscuro total (mitad hacia abajo)
-      // 1 = claro total (mitad hacia arriba)
-      let progress = 1 - (rect.top / (vh * 0.5));
+        // limitar entre 0 y 1
+        progress = Math.min(Math.max(progress, 0), 1);
 
-      // limitar entre 0 y 1
-      progress = Math.min(Math.max(progress, 0), 1);
-
-      // inicio muy oscuro (0.9) → claridad al subir
-      const opacity = 0.9 - progress * 0.9;
-
-      el.style.setProperty("--overlay-opacity", opacity.toFixed(3));
+        // inicio muy oscuro (0.9) → claridad al subir
+        const opacity = 0.9 - progress * 0.9;
+        el.style.setProperty("--overlay-opacity", opacity.toFixed(3)); // Enviamos este valor a CSS.
       });
 
       tickingRef.current = false;
     };
-
+    // Optimización (Ticking)
+    // No queremos que el ordenador explote intentando calcular 100 veces por segundo. 
+    // Por eso usamos requestAnimationFrame. Es como decirle al navegador: 
+    // "Cuando tengas un huequito libre antes de pintar el siguiente frame, haz este cálculo".
     const handleScroll = () => {
       if (!tickingRef.current) {
-        window.requestAnimationFrame(() => updateParallax());
+        window.requestAnimationFrame(updateParallax);
         tickingRef.current = true;
       }
     };
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
+        // Si el elemento entra en el visor (isIntersecting), le ponemos la clase "visible"
         if (entry.isIntersecting) entry.target.classList.add("visible");
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.15 }); // Se activa cuando vemos el 15% del elemento.
 
     observerRef.current = observer;
     fadeElements.forEach(el => observer.observe(el));
@@ -73,10 +74,10 @@ export default function ManualParallax() {
         observerRef.current = null;
       }
     };
-  }, []);
+  }, [parallaxElementsRef, tickingRef, observerRef]);
 
   return (
-    <div>
+    <div ref={parallaxElementsRef}>
       <div
         className="parallax-block"
         data-speed="0.2"
@@ -122,7 +123,7 @@ export default function ManualParallax() {
       </div>
 
       <div className="section fade">
-        <h3 className="section-title">BContacta con nosotros</h3>
+        <h3 className="section-title">Contacta con nosotros</h3>
         <p className="parrafo">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam aliquid.
         </p>

@@ -1,0 +1,94 @@
+html, body {
+margin: 0;
+padding: 0;
+overflow-x: hidden;
+}
+
+
+/* PARALLAX BLOQUES (MÓVILES COMPATIBLE) */
+/* 1. Cambiamos cover por un ancho mayor (ej. 150%) para tener margen lateral */
+  /* El primer valor es el ancho (150%) y el segundo el alto (auto) */
+.parallax-block {
+  height: 100vh;
+  background-size: 200% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform;
+  position: relative;
+  /* 2. Importante: ocultar lo que sobresalga si la imagen fuera muy grande */
+  overflow: hidden;
+}
+
+/* Overlay oscuro que cambia con el scroll */
+.parallax-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, var(--overlay-opacity, 0.9));
+  transition: background 0.3s linear;
+  z-index: 1;
+}
+
+/* Para que caption y contenido queden encima */
+.parallax-block > * {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* TEXTO SOBRE LAS IMÁGENES */
+.caption {
+text-align: center;
+}
+
+
+.caption .border {
+background-color: #111;
+color: #fff;
+padding: 20px;
+font-weight: bold;
+font-size: 25px;
+letter-spacing: 7px;
+}
+
+
+/* SECCIONES NORMALES */
+.section {
+width: 100vw;
+padding: 60px 0;
+text-align: center;
+background-color: rgb(0, 0, 5);
+color: #fff;
+}
+
+
+.section-title {
+margin-bottom: 20px;
+font-size: 24px;
+font-weight: bold;
+}
+
+.parrafo {
+width: 100vw;
+text-align: center;
+margin: 20px  auto;
+font-size: 28px;
+line-height: 1.5;
+}
+
+
+/* ANIMACIONES SCROLL APPEAR */
+.fade {
+opacity: 1;
+transform: translateY(30px);
+transition: opacity .9s ease, transform .9s ease;
+}
+
+
+.fade.visible {
+opacity: 1;
+transform: translateY(0);
+}
